@@ -1,0 +1,19 @@
+0.6: New note
+
+note over Browser:
+1. User submits a form by clicking the save button
+2. A new note is created and pushed to notes.
+3. redrawNotes is called again and the new note is rendered in the page.
+end note
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa | JSON is sent with the created note as content
+
+note over Server:
+The server internally processes the submitted data and send a response
+end note
+
+Server-->Browser: Response with Status 201 (Created)
+
+note over Browser:
+An entire cycle to reload the page does not happen here
+end note

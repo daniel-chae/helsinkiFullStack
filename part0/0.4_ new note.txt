@@ -1,0 +1,35 @@
+title 0.4: new note
+
+note over Browser:
+User submits a form by clicking the save button
+end note
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note | req.body = {note: user input}
+
+note over Server:
+The server internally processes the submitted data and sends a redirect response
+end note
+
+Server-->Browser: Response with Status 302, Redirect to https://fullstack-exampleapp.herokuapp.com/notes
+
+note over Browser:
+The browser redirects to the provided location and another page loading occurs
+end note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server-->Browser: Response with HTML code (Status code 200)
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server-->Browser: Response with main.css (Status code 200)
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server-->Browser: Response with main.js (Status code 200)
+
+note over Browser:
+The browser executes javascript code and JSON data is requested to the server
+end note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server-->Browser: Response with json (with all notes available)
+
+note over Browser:
+Event handler is called and contents are displayed
+end note

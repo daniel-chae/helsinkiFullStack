@@ -1,0 +1,31 @@
+title 0.5: Single page app
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+
+note over Server:
+The server routes the request to an appropriate handler
+end note
+
+Server-->Browser: Response with HTML code (Status code 200)
+
+note over Browser:
+The browser renders the HTML, and in the middle, encounters link tag and script tag.
+Hence, assets are requested
+end note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server-->Browser: Response with main.css (Status code 200)
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Server-->Browser: Response with spa.js (Status code 200)
+
+note over Browser:
+1. The browser executes javascript code and JSON data is requested to the server.
+2. Event listener is set on the form to send post request to server
+end note
+
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server-->Browser: Response with json (with all notes available)
+
+note over Browser:
+<li> elements are created and appended to <ul> with contents from JSON
+end note
