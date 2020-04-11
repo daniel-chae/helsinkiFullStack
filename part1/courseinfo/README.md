@@ -1,1 +1,1 @@
-fullStackOpen part1 exercises 1.1.-1.2.
+fullStackOpen part1 exercises 1.1.-1.5.
