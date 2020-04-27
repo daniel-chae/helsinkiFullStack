@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
@@ -9,12 +8,7 @@ import phonebookServices from "./services/phonebookServices";
 
 const App = () => {
   // From here ----------------------------------------------------------> Defined for useState hook
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
 
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
@@ -24,8 +18,8 @@ const App = () => {
 
   // From here ----------------------------------------------------------> Defined for useEffect hook
   const hook = () => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    phonebookServices.getPersons().then((persons) => {
+      setPersons(persons);
     });
   };
 
@@ -67,17 +61,22 @@ const App = () => {
           number: newNumber,
           id,
         };
-        phonebookServices.updatePerson(id, newData).then((updatedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== updatedPerson.id ? person : updatedPerson
-            )
-          );
-          setSuccessMessage(`Updated ${updatedPerson.name}`);
-          setTimeout(() => {
-            setSuccessMessage(null);
-          }, 2000);
-        });
+        phonebookServices
+          .updatePerson(id, newData)
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== updatedPerson.id ? person : updatedPerson
+              )
+            );
+            setSuccessMessage(`Updated ${updatedPerson.name}`);
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 2000);
+          })
+          .catch((err) => {
+            setErrorMessage(err.response.data.error);
+          });
       }
       setNewName("");
       setNewNumber("");
@@ -87,16 +86,20 @@ const App = () => {
     const newEntry = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
 
-    phonebookServices.createPerson(newEntry).then((newPerson) => {
-      setPersons(persons.concat(newPerson));
-      setSuccessMessage(`Created ${newPerson.name}`);
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 2000);
-    });
+    phonebookServices
+      .createPerson(newEntry)
+      .then((newPerson) => {
+        setPersons(persons.concat(newPerson));
+        setSuccessMessage(`Created ${newPerson.name}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 2000);
+      })
+      .catch((err) => {
+        setErrorMessage(err.response.data.error);
+      });
 
     setNewName("");
     setNewNumber("");
