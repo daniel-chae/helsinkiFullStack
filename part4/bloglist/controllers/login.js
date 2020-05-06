@@ -21,6 +21,8 @@ router.post('/', async (req, res, next) => {
     id: user._id,
   };
 
+  console.log(tokenBody);
+
   const token = jwt.sign(tokenBody, process.env.SECRET);
 
   res.status(200).json({ token, username: user.username, name: user.name });

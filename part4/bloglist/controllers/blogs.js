@@ -58,14 +58,44 @@ router.get('/:id', async (request, response) => {
 
 // Update a blog
 router.put('/:id', async (request, response) => {
-  const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.id,
+  const decodedToken =
+    request.token === undefined
+      ? false
+      : jwt.verify(request.token, process.env.SECRET);
+
+  if (!(request.token && decodedToken)) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const blogToUpdate = await Blog.findById(request.params.id);
+
+  if (!blogToUpdate) {
+    return response.status(204).json({ error: 'No matching blog found' });
+  }
+
+  if (blogToUpdate.user.toString() !== decodedToken.id) {
+    return response
+      .status(401)
+      .json({ error: 'The owner of the token is not the owner of the blog' });
+  }
+
+  const user = await User.findById(decodedToken.id);
+
+  request.body.user = user._id;
+  request.body.__v = blogToUpdate.__v;
+
+  const updatedBlog = await Blog.findOneAndReplace(
+    { _id: request.params.id },
     request.body,
     {
       new: true,
       runValidators: true,
     }
-  );
+  ).populate('user', {
+    username: 1,
+    name: 1,
+  });
+
   response.status(200).json(updatedBlog);
 });
 
@@ -75,6 +105,8 @@ router.delete('/:id', async (request, response) => {
     request.token === undefined
       ? false
       : jwt.verify(request.token, process.env.SECRET);
+
+  console.log('token', decodedToken);
 
   if (!(request.token && decodedToken)) {
     return response.status(401).json({ error: 'token missing or invalid' });
