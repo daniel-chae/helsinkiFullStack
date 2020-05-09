@@ -51,7 +51,8 @@ const Blog = ({ blog, requestDeleteBlog, requestUpdateBlog, user }) => {
         </div>
         <div>{blog.url}</div>
         <div className="like" data-testid="like">
-          {blog.likes} <button onClick={onUpdateRequest}>like</button>
+          <span>{blog.likes}</span>
+          <button onClick={onUpdateRequest}>like</button>
         </div>
         <div>{blog.author}</div>
         {blog.user.username === user.username ? (

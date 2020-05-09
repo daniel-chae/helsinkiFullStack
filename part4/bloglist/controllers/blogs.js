@@ -106,8 +106,6 @@ router.delete('/:id', async (request, response) => {
       ? false
       : jwt.verify(request.token, process.env.SECRET);
 
-  console.log('token', decodedToken);
-
   if (!(request.token && decodedToken)) {
     return response.status(401).json({ error: 'token missing or invalid' });
   }

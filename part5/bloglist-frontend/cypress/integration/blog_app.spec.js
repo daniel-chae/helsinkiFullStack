@@ -46,6 +46,7 @@ describe('Blog app', function () {
           title: 'generatedTitle',
           author: 'generatedAuthor',
           url: 'generatedUrl',
+          likes: 1,
         });
       });
 
@@ -58,7 +59,7 @@ describe('Blog app', function () {
       it('User who created the blog can delete it', function () {
         cy.get('.simple').contains('view').click();
         cy.get('.detail').contains('remove').click();
-        cy.get('.blogsContainer').should('not.contain', 'genereatedTitle');
+        cy.get('.blogsContainer').should('not.contain', 'generatedTitle');
       });
 
       it('User who did not created the blog cannot delete it', function () {
@@ -66,6 +67,35 @@ describe('Blog app', function () {
         cy.login({ username: 'testuser2', password: 'testpass' });
         cy.get('.simple').contains('view').click();
         cy.get('.detail').should('not.contain', 'remove');
+      });
+
+      it('User who did not created the blog cannot delete it', function () {
+        cy.createUser({ username: 'testuser2', password: 'testpass' });
+        cy.login({ username: 'testuser2', password: 'testpass' });
+        cy.get('.simple').contains('view').click();
+        cy.get('.detail').should('not.contain', 'remove');
+      });
+
+      it.only('Blog should be sorted in descending order with like count', function () {
+        cy.newBlog({
+          title: 'generatedTitle2',
+          author: 'generatedAuthor2',
+          url: 'generatedUrl2',
+          likes: 2,
+        });
+        cy.newBlog({
+          title: 'generatedTitle3',
+          author: 'generatedAuthor3',
+          url: 'generatedUrl3',
+          likes: 3,
+        });
+        cy.get('.simple').each((blog) => {
+          cy.wrap(blog).contains('view').click();
+        });
+        cy.get('.detail .like span').each((like, idx) => {
+          const expected = ['3', '2', '1'];
+          cy.wrap(like).should('have.text', expected[idx]);
+        });
       });
     });
   });
