@@ -15,7 +15,7 @@ const reducer = (state = [], action) => {
     case 'CREATE_ANECDOTE':
       return [...state, action.data];
     case 'INITIALIZE_ANECDOTES':
-      return action.data;
+      return sortAnecdotesDesc(action.data);
     default:
       return state;
   }
